@@ -12,7 +12,7 @@ export class WorkspacesService {
     private workspacesRepository: Repository<Workspace>,
   ) {}
 
-  create(createWorkspaceDto: CreateWorkspaceDto) {
+  create(createWorkspaceDto: CreateWorkspaceDto): Promise<Workspace> {
     return this.workspacesRepository.save(createWorkspaceDto);
   }
 
@@ -21,7 +21,7 @@ export class WorkspacesService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} workspace`;
+    return this.workspacesRepository.findOne(id, { relations: ['boards'] });
   }
 
   update(id: number, updateWorkspaceDto: UpdateWorkspaceDto) {

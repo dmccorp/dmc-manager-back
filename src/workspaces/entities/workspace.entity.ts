@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Board } from 'src/boards/entities/board.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Workspace {
@@ -7,4 +14,8 @@ export class Workspace {
 
   @Column()
   name: string;
+
+  @OneToMany((type) => Board, (board) => board.workspace)
+  // @JoinColumn()
+  boards: Board[];
 }
