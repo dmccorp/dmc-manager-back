@@ -1,0 +1,37 @@
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    @InjectRepository(User) private usersRepository: Repository<User>,
+    private jwtService: JwtService,
+  ) {}
+
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.usersRepository.findOne({ username });
+    if (user && (await bcrypt.compare(pass, user.password))) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
+
+  async signup(user: User): Promise<User> {
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(user.password, salt);
+    user.password = hash;
+    return await this.usersRepository.save(user);
+  }
+
+  async login(user: any) {
+    const payload = { username: user.username, sub: user.userId };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+}
