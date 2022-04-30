@@ -1,8 +1,9 @@
+import { User } from 'src/users/entities/user.entity';
 import { Workspace } from 'src/workspaces/entities/workspace.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -15,7 +16,9 @@ export class Board {
   @Column()
   name: string;
 
-  @ManyToOne((type) => Workspace, (workspace) => workspace.boards)
-  // @JoinColumn()
+  @ManyToOne(() => Workspace, (workspace) => workspace.boards)
   workspace: Workspace;
+
+  @ManyToMany(() => User, (user) => user.boards)
+  users: User[];
 }

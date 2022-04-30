@@ -1,4 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Board } from 'src/boards/entities/board.entity';
+import { Task } from 'src/tasks/entities/task.entity';
+import { Workspace } from 'src/workspaces/entities/workspace.entity';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -11,6 +20,15 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ default: 'user' })
   role: string;
+
+  @ManyToMany(() => Workspace, (workspace) => workspace.users)
+  workspaces: Workspace[];
+
+  @ManyToMany(() => Board, (board) => board.users)
+  boards: Board[];
+
+  @ManyToOne(() => Task, (task) => task.user)
+  tasks: Task[];
 }

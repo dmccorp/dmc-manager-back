@@ -2,33 +2,56 @@ import { Injectable } from '@nestjs/common';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { Workspace } from './entities/workspace.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class WorkspacesService {
   constructor(
     @InjectRepository(Workspace)
     private workspacesRepository: Repository<Workspace>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+    private connection: Connection,
   ) {}
 
-  create(createWorkspaceDto: CreateWorkspaceDto): Promise<Workspace> {
-    return this.workspacesRepository.save(createWorkspaceDto);
+  async create(createWorkspaceDto: CreateWorkspaceDto): Promise<Workspace> {
+    const { users, ...dto } = createWorkspaceDto;
+    const workspace = await this.workspacesRepository.create(dto);
+    const foundUsers = await this.usersRepository.findByIds(users);
+    workspace.users = foundUsers;
+    return this.workspacesRepository.save(workspace);
   }
 
   findAll(): Promise<Workspace[]> {
     return this.workspacesRepository.find();
   }
 
+  async getWorkspaces(id): Promise<Workspace[]> {
+    const workspaces = await this.workspacesRepository.find({
+      relations: ['users', 'boards'],
+    });
+    return workspaces.filter((workspace) =>
+      workspace.users?.some((user) => user.id === id),
+    );
+  }
+
   findOne(id: number) {
     return this.workspacesRepository.findOne(id, { relations: ['boards'] });
   }
 
-  update(id: number, updateWorkspaceDto: UpdateWorkspaceDto) {
-    return `This action updates a #${id} workspace`;
+  async update(id: number, updateWorkspaceDto: UpdateWorkspaceDto) {
+    const workspace = await this.workspacesRepository.findOne(id);
+    const users = await this.usersRepository.findByIds(
+      updateWorkspaceDto.users,
+    );
+    workspace.users = users;
+    this.connection.manager.save(workspace);
+    return workspace;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} workspace`;
+    return this.workspacesRepository.delete(id);
   }
 }
