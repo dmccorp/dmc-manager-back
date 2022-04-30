@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
@@ -12,9 +13,11 @@ export class BoardsController {
     return this.boardsService.create(createBoardDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.boardsService.findAll();
+  findAll(@Request() req) {
+    // return this.boardsService.findAll();
+    return this.boardsService.getBoards(req.user.id);
   }
 
   @Get(':id')

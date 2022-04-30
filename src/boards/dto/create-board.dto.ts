@@ -6,4 +6,7 @@ export class CreateBoardDto {
 
   @IsNotEmpty()
   workspaceId: number;
+
+  @IsNotEmpty()
+  users: number[];
 }

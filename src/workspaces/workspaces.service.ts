@@ -29,12 +29,10 @@ export class WorkspacesService {
   }
 
   async getWorkspaces(id): Promise<Workspace[]> {
-    const workspaces = await this.workspacesRepository.find({
-      relations: ['users', 'boards'],
+    const user = await this.usersRepository.findOne(id, {
+      relations: ['workspaces', 'workspaces.users', 'workspaces.boards'],
     });
-    return workspaces.filter((workspace) =>
-      workspace.users?.some((user) => user.id === id),
-    );
+    return user.workspaces;
   }
 
   findOne(id: number) {

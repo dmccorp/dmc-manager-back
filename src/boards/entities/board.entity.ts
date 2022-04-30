@@ -3,6 +3,7 @@ import { Workspace } from 'src/workspaces/entities/workspace.entity';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -20,5 +21,6 @@ export class Board {
   workspace: Workspace;
 
   @ManyToMany(() => User, (user) => user.boards)
+  @JoinTable()
   users: User[];
 }

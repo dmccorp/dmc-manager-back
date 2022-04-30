@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 import { Workspace } from 'src/workspaces/entities/workspace.entity';
 import { Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -12,19 +13,31 @@ export class BoardsService {
     @InjectRepository(Board) private boardRepository: Repository<Board>,
     @InjectRepository(Workspace)
     private workspaceRepository: Repository<Workspace>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
+    const { users, ...dto } = createBoardDto;
     const workspace = await this.workspaceRepository.findOne(
       createBoardDto.workspaceId,
     );
-    const board = await this.boardRepository.create(createBoardDto);
+    const board = await this.boardRepository.create(dto);
     board.workspace = workspace;
+    const foundUsers = await this.usersRepository.findByIds(users);
+    board.users = foundUsers;
     return this.boardRepository.save(board);
   }
 
   findAll(): Promise<Board[]> {
     return this.boardRepository.find();
+  }
+
+  async getBoards(id): Promise<Board[]> {
+    const user = await this.usersRepository.findOne(id, {
+      relations: ['boards', 'boards.users'],
+    });
+    return user.boards;
   }
 
   findOne(id: number) {
@@ -36,6 +49,6 @@ export class BoardsService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} board`;
+    return this.boardRepository.delete(id);
   }
 }
