@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
 import { Workspace } from './entities/workspace.entity';
 import { User } from 'src/users/entities/user.entity';
+import { WorkspaceUser } from './entities/workspaceUser.entity';
 
 @Injectable()
 export class WorkspacesService {
@@ -16,21 +17,39 @@ export class WorkspacesService {
     private connection: Connection,
   ) {}
 
-  async create(createWorkspaceDto: CreateWorkspaceDto): Promise<Workspace> {
+  async create(
+    createWorkspaceDto: CreateWorkspaceDto,
+    userId: number,
+  ): Promise<Workspace> {
     const { users, ...dto } = createWorkspaceDto;
     const workspace = await this.workspacesRepository.create(dto);
-    const foundUsers = await this.usersRepository.findByIds(users);
-    workspace.users = foundUsers;
-    return this.workspacesRepository.save(workspace);
+    // const workspaceUsers = [];
+    // workspace.users = workspaceUsers;
+    this.workspacesRepository.save(workspace);
+    const foundUsers = await this.usersRepository.findByIds([...users, userId]);
+    for (const user of foundUsers) {
+      const workspaceUser = new WorkspaceUser();
+      workspaceUser.role = userId === user.id ? 'owner' : 'member';
+      workspaceUser.user = user;
+      workspaceUser.workspace = workspace;
+      await this.connection.manager.save(workspaceUser);
+      // workspaceUsers.push(workspaceUser);
+    }
+    return workspace;
   }
 
   findAll(): Promise<Workspace[]> {
     return this.workspacesRepository.find();
   }
 
-  async getWorkspaces(id): Promise<Workspace[]> {
+  async getWorkspaces(id): Promise<WorkspaceUser[]> {
     const user = await this.usersRepository.findOne(id, {
-      relations: ['workspaces', 'workspaces.users', 'workspaces.boards'],
+      relations: [
+        'workspaces',
+        'workspaces.workspace',
+        'workspaces.workspace.boards',
+        // 'workspaces.user',
+      ],
     });
     return user.workspaces;
   }

@@ -1,13 +1,7 @@
 import { Board } from 'src/boards/entities/board.entity';
 import { User } from 'src/users/entities/user.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { WorkspaceUser } from './workspaceUser.entity';
 
 @Entity()
 export class Workspace {
@@ -20,7 +14,6 @@ export class Workspace {
   @OneToMany(() => Board, (board) => board.workspace)
   boards: Board[];
 
-  @ManyToMany(() => User, (user) => user.workspaces)
-  @JoinTable()
+  @OneToMany(() => WorkspaceUser, (user) => user.workspace)
   users: User[];
 }

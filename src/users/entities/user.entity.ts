@@ -1,15 +1,16 @@
 import { Exclude, instanceToPlain } from 'class-transformer';
 import { Board } from 'src/boards/entities/board.entity';
 import { Task } from 'src/tasks/entities/task.entity';
-import { Workspace } from 'src/workspaces/entities/workspace.entity';
 import {
   Column,
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { WorkspaceUser } from 'src/workspaces/entities/workspaceUser.entity';
 
 @Entity()
 export class User {
@@ -26,8 +27,8 @@ export class User {
   @Column({ default: 'user' })
   role: string;
 
-  @ManyToMany(() => Workspace, (workspace) => workspace.users)
-  workspaces: Workspace[];
+  @OneToMany(() => WorkspaceUser, (workspace) => workspace.user)
+  workspaces: WorkspaceUser[];
 
   @ManyToMany(() => Board, (board) => board.users)
   boards: Board[];
