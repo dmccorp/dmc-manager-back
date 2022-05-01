@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Workspace } from 'src/workspaces/entities/workspace.entity';
@@ -22,6 +22,7 @@ export class BoardsService {
     const workspace = await this.workspaceRepository.findOne(
       createBoardDto.workspaceId,
     );
+    if (!workspace) throw new NotFoundException('workspace not found');
     const board = await this.boardRepository.create(dto);
     board.workspace = workspace;
     const foundUsers = await this.usersRepository.findByIds(users);
@@ -35,7 +36,7 @@ export class BoardsService {
 
   async getBoards(id): Promise<Board[]> {
     const user = await this.usersRepository.findOne(id, {
-      relations: ['boards', 'boards.users'],
+      relations: ['boards', 'boards.users', 'boards.sprints'],
     });
     return user.boards;
   }

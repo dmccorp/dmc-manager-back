@@ -1,3 +1,4 @@
+import { Sprint } from 'src/sprint/entities/sprint.entity';
 import { Task } from 'src/tasks/entities/task.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Workspace } from 'src/workspaces/entities/workspace.entity';
@@ -28,4 +29,7 @@ export class Board {
 
   @OneToMany(() => Task, (task) => task.board)
   tasks: Task[];
+
+  @OneToMany(() => Sprint, (sprint) => sprint.board)
+  sprints: Sprint[];
 }

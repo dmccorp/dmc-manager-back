@@ -7,6 +7,7 @@ import { BoardsModule } from './boards/boards.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TasksModule } from './tasks/tasks.module';
+import { SprintModule } from './sprint/sprint.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TasksModule } from './tasks/tasks.module';
     AuthModule,
     UsersModule,
     TasksModule,
+    SprintModule,
   ],
   controllers: [AppController],
   providers: [AppService],

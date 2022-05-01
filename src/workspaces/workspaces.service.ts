@@ -48,6 +48,7 @@ export class WorkspacesService {
         'workspaces',
         'workspaces.workspace',
         'workspaces.workspace.boards',
+        'workspaces.workspace.boards.sprints',
         // 'workspaces.user',
       ],
     });

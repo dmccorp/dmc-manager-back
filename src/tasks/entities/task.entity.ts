@@ -1,4 +1,5 @@
 import { Board } from 'src/boards/entities/board.entity';
+import { Sprint } from 'src/sprint/entities/sprint.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -25,6 +26,9 @@ export class Task {
 
   @ManyToOne(() => User, (user) => user.createdTasks)
   createdBy: User;
+
+  @ManyToOne(() => Sprint, (sprint) => sprint.tasks)
+  sprint: Sprint;
 
   @Column()
   dueDate: Date;
