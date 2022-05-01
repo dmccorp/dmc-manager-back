@@ -60,7 +60,9 @@ export class TasksService {
       relations: ['createdBy'],
     });
     if (!task) throw new NotFoundException();
-    // task.name = dto.name;
+    for (const key in dto) {
+      task[key] = dto[key];
+    }
     if (board) {
       const foundBoard = await this.boardsRepository.findOne(board);
       if (!foundBoard) throw new NotFoundException('board not found');
