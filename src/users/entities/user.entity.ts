@@ -1,3 +1,4 @@
+import { Exclude, instanceToPlain } from 'class-transformer';
 import { Board } from 'src/boards/entities/board.entity';
 import { Task } from 'src/tasks/entities/task.entity';
 import { Workspace } from 'src/workspaces/entities/workspace.entity';
@@ -8,6 +9,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -17,7 +19,8 @@ export class User {
   @Column()
   username: string;
 
-  @Column({ select: false })
+  @Exclude({ toPlainOnly: true })
+  @Column()
   password: string;
 
   @Column({ default: 'user' })
@@ -29,6 +32,17 @@ export class User {
   @ManyToMany(() => Board, (board) => board.users)
   boards: Board[];
 
-  @ManyToOne(() => Task, (task) => task.user)
-  tasks: Task[];
+  @ManyToOne(() => Task, (task) => task.assignee)
+  assignedTasks: Task[];
+
+  @ManyToOne(() => Task, (task) => task.createdBy)
+  createdTasks: Task[];
+
+  toJSON() {
+    return instanceToPlain(this);
+  }
+
+  validatePassword(password: string) {
+    return bcrypt.compare(password, this.password);
+  }
 }

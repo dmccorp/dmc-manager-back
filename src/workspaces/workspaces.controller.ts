@@ -14,6 +14,7 @@ import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('workspaces')
 export class WorkspacesController {
   constructor(private readonly workspacesService: WorkspacesService) {}
@@ -23,7 +24,6 @@ export class WorkspacesController {
     return this.workspacesService.create(createWorkspaceDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Request() req) {
     return this.workspacesService.getWorkspaces(req.user.id);
