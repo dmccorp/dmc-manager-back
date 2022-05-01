@@ -27,10 +27,11 @@ export class AuthService {
     return await this.usersRepository.save(user);
   }
 
-  async login(user: any) {
+  async login(user: User) {
     const payload = { username: user.username, sub: user.id };
     return {
-      access_token: this.jwtService.sign(payload),
+      jwt: this.jwtService.sign(payload),
+      user,
     };
   }
 }
