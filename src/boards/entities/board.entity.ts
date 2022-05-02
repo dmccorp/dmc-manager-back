@@ -11,6 +11,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { BoardUser } from './boardUser.entity';
 import { State } from './state.entity';
 
 @Entity()
@@ -24,9 +25,8 @@ export class Board {
   @ManyToOne(() => Workspace, (workspace) => workspace.boards)
   workspace: Workspace;
 
-  @ManyToMany(() => User, (user) => user.boards)
-  @JoinTable()
-  users: User[];
+  @OneToMany(() => BoardUser, (user) => user.board)
+  users: BoardUser[];
 
   @OneToMany(() => Task, (task) => task.board)
   tasks: Task[];

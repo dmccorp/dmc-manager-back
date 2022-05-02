@@ -20,9 +20,12 @@ export class TasksService {
     const task = new Task();
     task.name = createTaskDto.name;
     const board = await this.boardsRepository.findOne(createTaskDto.board, {
-      relations: ['users'],
+      relations: ['users', 'users.user'],
     });
-    if (!board || !board.users.some((user) => user.id === userId))
+    if (
+      !board ||
+      !board.users.some((boardUser) => boardUser.user.id === userId)
+    )
       throw new NotFoundException('board not found');
     task.board = board;
     if (createTaskDto.assignee) {

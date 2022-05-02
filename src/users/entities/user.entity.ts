@@ -12,6 +12,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { WorkspaceUser } from 'src/workspaces/entities/workspaceUser.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { BoardUser } from 'src/boards/entities/boardUser.entity';
 
 @Entity()
 export class User {
@@ -33,8 +34,8 @@ export class User {
   @OneToMany(() => WorkspaceUser, (workspace) => workspace.user)
   workspaces: WorkspaceUser[];
 
-  @ManyToMany(() => Board, (board) => board.users)
-  boards: Board[];
+  @OneToMany(() => BoardUser, (board) => board.user)
+  boards: BoardUser[];
 
   @ManyToOne(() => Task, (task) => task.assignee)
   assignedTasks: Task[];

@@ -7,6 +7,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { CreateStateDto } from './dto/create-state.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Board } from './entities/board.entity';
+import { BoardUser } from './entities/boardUser.entity';
 import { State } from './entities/state.entity';
 
 @Injectable()
@@ -21,7 +22,7 @@ export class BoardsService {
     private connection: Connection,
   ) {}
 
-  async create(createBoardDto: CreateBoardDto): Promise<Board> {
+  async create(createBoardDto: CreateBoardDto, userId): Promise<Board> {
     const { users, ...dto } = createBoardDto;
     const workspace = await this.workspaceRepository.findOne(
       createBoardDto.workspaceId,
@@ -29,16 +30,23 @@ export class BoardsService {
     if (!workspace) throw new NotFoundException('workspace not found');
     const board = await this.boardRepository.create(dto);
     board.workspace = workspace;
-    const foundUsers = await this.usersRepository.findByIds(users);
-    board.users = foundUsers;
-    return this.boardRepository.save(board);
+    this.boardRepository.save(board);
+    const foundUsers = await this.usersRepository.findByIds([...users, userId]);
+    for (const user of foundUsers) {
+      const boardUser = new BoardUser();
+      boardUser.role = userId === user.id ? 'owner' : 'member';
+      boardUser.user = user;
+      boardUser.board = board;
+      await this.connection.manager.save(boardUser);
+    }
+    return board;
   }
 
   findAll(): Promise<Board[]> {
     return this.boardRepository.find();
   }
 
-  async getBoards(id): Promise<Board[]> {
+  async getBoards(id): Promise<BoardUser[]> {
     const user = await this.usersRepository.findOne(id, {
       relations: ['boards', 'boards.users', 'boards.sprints', 'boards.states'],
     });
