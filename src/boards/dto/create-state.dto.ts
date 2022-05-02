@@ -9,8 +9,4 @@ export class CreateStateDto {
   @ApiProperty()
   @IsNotEmpty()
   state: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  internalState: string;
 }

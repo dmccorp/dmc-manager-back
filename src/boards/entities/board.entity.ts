@@ -25,15 +25,15 @@ export class Board {
   @ManyToOne(() => Workspace, (workspace) => workspace.boards)
   workspace: Workspace;
 
-  @OneToMany(() => BoardUser, (user) => user.board)
+  @OneToMany(() => BoardUser, (user) => user.board, { cascade: true })
   users: BoardUser[];
 
-  @OneToMany(() => Task, (task) => task.board)
+  @OneToMany(() => Task, (task) => task.board, { cascade: true })
   tasks: Task[];
 
-  @OneToMany(() => Sprint, (sprint) => sprint.board)
+  @OneToMany(() => Sprint, (sprint) => sprint.board, { cascade: true })
   sprints: Sprint[];
 
-  @OneToMany(() => State, (state) => state.board)
+  @OneToMany(() => State, (state) => state.board, { cascade: true })
   states: State[];
 }

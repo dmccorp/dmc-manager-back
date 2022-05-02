@@ -57,8 +57,42 @@ export class BoardsService {
     return this.boardRepository.findOne(id, { relations: ['workspace'] });
   }
 
-  update(id: number, updateBoardDto: UpdateBoardDto) {
-    return `This action updates a #${id} board`;
+  async update(id: number, updateBoardDto: UpdateBoardDto) {
+    const board = await this.boardRepository.findOne(id, {
+      relations: ['users.user'],
+    });
+    board.name = updateBoardDto.name;
+    this.connection.manager.save(board);
+    if (updateBoardDto.users) {
+      const userIds = updateBoardDto.users;
+      // TODO: check at least one owner
+      const remainingUsers = board.users.filter((boardUser) =>
+        userIds.includes(boardUser.user.id),
+      );
+      const remainingIds = remainingUsers.map((boardUser) => boardUser.user.id);
+      const newUserIds = userIds.filter((id) => !remainingIds.includes(id));
+      const newUsers = await this.usersRepository.findByIds(newUserIds);
+      board.users = remainingUsers;
+      this.connection.manager.save(board);
+      // TODO: accept as set role
+      for (const user of newUsers) {
+        const boardUser = new BoardUser();
+        boardUser.board = board;
+        boardUser.user = user;
+        this.connection.manager.save(boardUser);
+      }
+    }
+    if (updateBoardDto.states) {
+      const states = updateBoardDto.states.map((dto) => {
+        const state = new State();
+        state.name = dto.name;
+        state.state = dto.state;
+        return state;
+      });
+      board.states = states;
+      this.connection.manager.save(board);
+    }
+    return board;
   }
 
   remove(id: number) {

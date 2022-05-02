@@ -12,9 +12,6 @@ export class State {
   @Column()
   state: string;
 
-  @Column()
-  internalState: string;
-
   @ManyToOne(() => Board, (board) => board.states)
   board: Board;
 
