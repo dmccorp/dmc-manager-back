@@ -13,19 +13,26 @@ import { WorkspacesService } from './workspaces.service';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { WorkspaceUser } from './entities/workspaceUser.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { Workspace } from './entities/workspace.entity';
 
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('workspaces')
 export class WorkspacesController {
   constructor(private readonly workspacesService: WorkspacesService) {}
 
   @Post()
-  create(@Body() createWorkspaceDto: CreateWorkspaceDto, @Request() req) {
+  create(
+    @Body() createWorkspaceDto: CreateWorkspaceDto,
+    @Request() req,
+  ): Promise<Workspace> {
     return this.workspacesService.create(createWorkspaceDto, req.user.id);
   }
 
   @Get()
-  findAll(@Request() req) {
+  findAll(@Request() req): Promise<WorkspaceUser[]> {
     return this.workspacesService.getWorkspaces(req.user.id);
     // return this.workspacesService.findAll();
   }
