@@ -2,10 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Workspace } from 'src/workspaces/entities/workspace.entity';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { CreateStateDto } from './dto/create-state.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Board } from './entities/board.entity';
+import { State } from './entities/state.entity';
 
 @Injectable()
 export class BoardsService {
@@ -15,6 +17,8 @@ export class BoardsService {
     private workspaceRepository: Repository<Workspace>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(State) private stateRepository: Repository<State>,
+    private connection: Connection,
   ) {}
 
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
@@ -36,7 +40,7 @@ export class BoardsService {
 
   async getBoards(id): Promise<Board[]> {
     const user = await this.usersRepository.findOne(id, {
-      relations: ['boards', 'boards.users', 'boards.sprints'],
+      relations: ['boards', 'boards.users', 'boards.sprints', 'boards.states'],
     });
     return user.boards;
   }
@@ -51,5 +55,12 @@ export class BoardsService {
 
   remove(id: number) {
     return this.boardRepository.delete(id);
+  }
+
+  async createState(id: number, createStateDto: CreateStateDto) {
+    const state = await this.stateRepository.create(createStateDto);
+    const foundBoard = await this.boardRepository.findOne(id);
+    state.board = foundBoard;
+    return this.stateRepository.save(state);
   }
 }

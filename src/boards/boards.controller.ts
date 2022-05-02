@@ -13,6 +13,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { TasksService } from 'src/tasks/tasks.service';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { CreateStateDto } from './dto/create-state.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 
 @UseGuards(JwtAuthGuard)
@@ -52,5 +53,10 @@ export class BoardsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.boardsService.remove(+id);
+  }
+
+  @Post(':id/states')
+  createState(@Body() createStateDto: CreateStateDto, @Param('id') id: string) {
+    return this.boardsService.createState(+id, createStateDto);
   }
 }

@@ -11,6 +11,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { State } from './state.entity';
 
 @Entity()
 export class Board {
@@ -32,4 +33,7 @@ export class Board {
 
   @OneToMany(() => Sprint, (sprint) => sprint.board)
   sprints: Sprint[];
+
+  @OneToMany(() => State, (state) => state.board)
+  states: State[];
 }
