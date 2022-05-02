@@ -15,10 +15,10 @@ export class Workspace {
   name: string;
 
   @ApiProperty()
-  @OneToMany(() => Board, (board) => board.workspace)
+  @OneToMany(() => Board, (board) => board.workspace, { cascade: true })
   boards: Board[];
 
   @ApiProperty()
-  @OneToMany(() => WorkspaceUser, (user) => user.workspace)
-  users: User[];
+  @OneToMany(() => WorkspaceUser, (user) => user.workspace, { cascade: true })
+  users: WorkspaceUser[];
 }
