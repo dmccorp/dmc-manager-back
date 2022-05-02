@@ -11,15 +11,18 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { WorkspaceUser } from 'src/workspaces/entities/workspaceUser.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column()
   username: string;
 
+  @ApiProperty()
   @Exclude({ toPlainOnly: true })
   @Column()
   password: string;
