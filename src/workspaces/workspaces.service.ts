@@ -61,7 +61,9 @@ export class WorkspacesService {
   }
 
   async update(id: number, updateWorkspaceDto: UpdateWorkspaceDto) {
+    // const { users, ...dto } = updateWorkspaceDto;
     const workspace = await this.workspacesRepository.findOne(id);
+    workspace.name = updateWorkspaceDto.name;
     this.connection.manager.save(workspace);
     if (updateWorkspaceDto.users) {
       const users = await this.usersRepository.findByIds(
