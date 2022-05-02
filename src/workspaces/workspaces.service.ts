@@ -61,15 +61,31 @@ export class WorkspacesService {
   }
 
   async update(id: number, updateWorkspaceDto: UpdateWorkspaceDto) {
-    // const { users, ...dto } = updateWorkspaceDto;
-    const workspace = await this.workspacesRepository.findOne(id);
+    const workspace = await this.workspacesRepository.findOne(id, {
+      relations: ['users.user'],
+    });
     workspace.name = updateWorkspaceDto.name;
     this.connection.manager.save(workspace);
     if (updateWorkspaceDto.users) {
-      const users = await this.usersRepository.findByIds(
-        updateWorkspaceDto.users,
+      const userIds = updateWorkspaceDto.users;
+      // TODO: check at least one owner
+      const remainingUsers = workspace.users.filter((workspaceUser) =>
+        userIds.includes(workspaceUser.user.id),
       );
-      workspace.users = users;
+      const remainingIds = remainingUsers.map(
+        (workspaceUser) => workspaceUser.user.id,
+      );
+      const newUserIds = userIds.filter((id) => !remainingIds.includes(id));
+      const newUsers = await this.usersRepository.findByIds(newUserIds);
+      workspace.users = remainingUsers;
+      this.connection.manager.save(workspace);
+      // TODO: accept as set role
+      for (const user of newUsers) {
+        const workspaceUser = new WorkspaceUser();
+        workspaceUser.workspace = workspace;
+        workspaceUser.user = user;
+        this.connection.manager.save(workspaceUser);
+      }
     }
     return workspace;
   }
