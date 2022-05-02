@@ -1,23 +1,23 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiResponseProperty } from '@nestjs/swagger';
 import { User } from 'src/users/entities/user.entity';
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Workspace } from './workspace.entity';
 
 @Entity()
 export class WorkspaceUser {
-  @ApiProperty()
+  @ApiResponseProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty()
+  @ApiResponseProperty()
   @Column({ default: 'member' })
   role: string;
 
-  @ApiProperty()
+  @ApiResponseProperty()
   @ManyToOne(() => User, (user) => user.workspaces)
   user: User;
 
-  @ApiProperty()
+  @ApiResponseProperty()
   @ManyToOne(() => Workspace, (workspace) => workspace.users)
   workspace: Workspace;
 }

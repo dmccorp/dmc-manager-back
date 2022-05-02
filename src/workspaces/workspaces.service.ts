@@ -62,11 +62,13 @@ export class WorkspacesService {
 
   async update(id: number, updateWorkspaceDto: UpdateWorkspaceDto) {
     const workspace = await this.workspacesRepository.findOne(id);
-    const users = await this.usersRepository.findByIds(
-      updateWorkspaceDto.users,
-    );
-    workspace.users = users;
     this.connection.manager.save(workspace);
+    if (updateWorkspaceDto.users) {
+      const users = await this.usersRepository.findByIds(
+        updateWorkspaceDto.users,
+      );
+      workspace.users = users;
+    }
     return workspace;
   }
 
