@@ -9,13 +9,16 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { TasksService } from 'src/tasks/tasks.service';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { CreateStateDto } from './dto/create-state.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
+import { BoardUser } from './entities/boardUser.entity';
 
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('boards')
 export class BoardsController {
@@ -30,6 +33,9 @@ export class BoardsController {
   }
 
   @Get()
+  @ApiOkResponse({
+    type: [BoardUser],
+  })
   findAll(@Request() req) {
     // return this.boardsService.findAll();
     return this.boardsService.getBoards(req.user.id);

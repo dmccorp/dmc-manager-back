@@ -13,6 +13,8 @@ import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ApiOkResponse } from '@nestjs/swagger';
+import { Task } from './entities/task.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('tasks')
@@ -25,6 +27,9 @@ export class TasksController {
   }
 
   @Get()
+  @ApiOkResponse({
+    type: [Task],
+  })
   findAll() {
     return this.tasksService.findAll();
   }

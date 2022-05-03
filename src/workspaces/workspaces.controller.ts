@@ -19,7 +19,6 @@ import {
   ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { Workspace } from './entities/workspace.entity';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -28,17 +27,14 @@ export class WorkspacesController {
   constructor(private readonly workspacesService: WorkspacesService) {}
 
   @Post()
-  create(
-    @Body() createWorkspaceDto: CreateWorkspaceDto,
-    @Request() req,
-  ): Promise<Workspace> {
+  create(@Body() createWorkspaceDto: CreateWorkspaceDto, @Request() req) {
     return this.workspacesService.create(createWorkspaceDto, req.user.id);
   }
 
   @Get()
-  @ApiOkResponse()
+  @ApiOkResponse({ type: [WorkspaceUser] })
   @ApiUnauthorizedResponse()
-  findAll(@Request() req): Promise<WorkspaceUser[]> {
+  findAll(@Request() req) {
     return this.workspacesService.getWorkspaces(req.user.id);
     // return this.workspacesService.findAll();
   }

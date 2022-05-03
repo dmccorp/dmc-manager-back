@@ -1,21 +1,20 @@
 import { Exclude, instanceToPlain } from 'class-transformer';
-import { Board } from 'src/boards/entities/board.entity';
 import { Task } from 'src/tasks/entities/task.entity';
 import {
   Column,
   Entity,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { WorkspaceUser } from 'src/workspaces/entities/workspaceUser.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { BoardUser } from 'src/boards/entities/boardUser.entity';
 
 @Entity()
 export class User {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,7 +22,8 @@ export class User {
   @Column()
   username: string;
 
-  @ApiProperty()
+  // @ApiProperty()
+  // @ApiHideProperty()
   @Exclude({ toPlainOnly: true })
   @Column()
   password: string;

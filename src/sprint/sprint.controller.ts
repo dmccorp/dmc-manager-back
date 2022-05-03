@@ -10,6 +10,8 @@ import {
 import { SprintService } from './sprint.service';
 import { CreateSprintDto } from './dto/create-sprint.dto';
 import { UpdateSprintDto } from './dto/update-sprint.dto';
+import { ApiOkResponse } from '@nestjs/swagger';
+import { Sprint } from './entities/sprint.entity';
 
 @Controller('sprints')
 export class SprintController {
@@ -21,6 +23,9 @@ export class SprintController {
   }
 
   @Get()
+  @ApiOkResponse({
+    type: [Sprint],
+  })
   findAll() {
     return this.sprintService.findAll();
   }

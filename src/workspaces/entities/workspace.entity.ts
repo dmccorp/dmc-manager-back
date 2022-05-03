@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Board } from 'src/boards/entities/board.entity';
-import { User } from 'src/users/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { WorkspaceUser } from './workspaceUser.entity';
 
@@ -14,11 +13,11 @@ export class Workspace {
   @Column()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => [Board] })
   @OneToMany(() => Board, (board) => board.workspace, { cascade: true })
   boards: Board[];
 
-  @ApiProperty()
+  @ApiProperty({ type: () => [WorkspaceUser] })
   @OneToMany(() => WorkspaceUser, (user) => user.workspace, { cascade: true })
   users: WorkspaceUser[];
 }
