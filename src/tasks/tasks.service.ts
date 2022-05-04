@@ -45,7 +45,12 @@ export class TasksService {
 
   async getTasksFromBoard(id): Promise<Task[]> {
     const board = await this.boardsRepository.findOne(id, {
-      relations: ['tasks', 'tasks.assignee', 'tasks.createdBy'],
+      relations: [
+        'tasks',
+        'tasks.assignee',
+        'tasks.createdBy',
+        'tasks.comments',
+      ],
     });
     if (!board) throw new NotFoundException();
     return board.tasks;
