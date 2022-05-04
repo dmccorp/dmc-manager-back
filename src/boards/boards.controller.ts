@@ -65,4 +65,9 @@ export class BoardsController {
   createState(@Body() createStateDto: CreateStateDto, @Param('id') id: string) {
     return this.boardsService.createState(+id, createStateDto);
   }
+
+  @Delete(':id/states')
+  removeStatus(@Param('id') id: string) {
+    return this.boardsService.clearStates(+id);
+  }
 }

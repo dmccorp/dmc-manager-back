@@ -23,6 +23,9 @@ export class Task {
   @Column()
   name: string;
 
+  @ApiProperty()
+  stateId: number;
+
   @ApiProperty({ type: () => Board })
   @ManyToOne(() => Board, (board) => board.tasks)
   board: Board;
@@ -44,8 +47,12 @@ export class Task {
   comments: Comment[];
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   dueDate: Date;
+
+  @ApiProperty()
+  @Column({ nullable: true })
+  priority: number;
 
   @ApiProperty()
   @CreateDateColumn()

@@ -59,10 +59,9 @@ export class BoardsService {
 
   async update(id: number, updateBoardDto: UpdateBoardDto) {
     const board = await this.boardRepository.findOne(id, {
-      relations: ['users.user'],
+      relations: ['users', 'users.user'],
     });
     board.name = updateBoardDto.name;
-    this.connection.manager.save(board);
     if (updateBoardDto.users) {
       const userIds = updateBoardDto.users.map((user) => user.id);
       // TODO: check at least one owner
@@ -73,7 +72,6 @@ export class BoardsService {
       const newUserIds = userIds.filter((id) => !remainingIds.includes(id));
       const newUsers = await this.usersRepository.findByIds(newUserIds);
       board.users = remainingUsers;
-      this.connection.manager.save(board);
       // TODO: accept as set role
       for (const user of newUsers) {
         const boardUser = new BoardUser();
@@ -90,8 +88,8 @@ export class BoardsService {
         return state;
       });
       board.states = states;
-      this.connection.manager.save(board);
     }
+    this.connection.manager.save(board);
     return board;
   }
 
@@ -104,5 +102,12 @@ export class BoardsService {
     const foundBoard = await this.boardRepository.findOne(id);
     state.board = foundBoard;
     return this.stateRepository.save(state);
+  }
+
+  async clearStates(id: number) {
+    const board = await this.boardRepository.findOne(id);
+    board.states = [];
+    await this.boardRepository.save(board);
+    return board;
   }
 }

@@ -19,6 +19,7 @@ export class TasksService {
   async create(createTaskDto: CreateTaskDto, userId: number) {
     const task = new Task();
     task.name = createTaskDto.name;
+    task.stateId = createTaskDto.stateId;
     const board = await this.boardsRepository.findOne(createTaskDto.board, {
       relations: ['users', 'users.user'],
     });
@@ -88,6 +89,6 @@ export class TasksService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} task`;
+    return this.tasksRepository.delete(id);
   }
 }

@@ -12,4 +12,7 @@ export class CreateTaskDto {
 
   @ApiProperty()
   assignee: number;
+
+  @ApiProperty()
+  stateId: number;
 }
