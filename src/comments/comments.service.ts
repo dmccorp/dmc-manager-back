@@ -12,23 +12,22 @@ export class CommentsService {
   constructor(
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     @InjectRepository(Task) private tasksRepository: Repository<Task>,
-    @InjectRepository(User) private usersRepository: Repository<User>
+    @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
   async create(createCommentDto: CreateCommentDto, userId: number) {
     const task = await this.tasksRepository.findOne(createCommentDto.taskId);
-    if ( !task )
-      throw new NotFoundException('task not found');
+    if (!task) throw new NotFoundException('task not found');
 
     const comment = new Comment();
     comment.commentText = createCommentDto.comment;
-    comment.task = task
+    comment.task = task;
     const createdBy = await this.usersRepository.findOne(userId);
     comment.createdBy = createdBy;
     this.tasksRepository.save(task);
-    task.comments.push(comment)
+    task.comments.push(comment);
 
-    return comment
+    return comment;
   }
 
   findAll() {
@@ -36,8 +35,8 @@ export class CommentsService {
   }
 
   findOne(id: number) {
-    const comment = this.commentRepository.findOne(id)
-    return comment
+    const comment = this.commentRepository.findOne(id);
+    return comment;
   }
 
   update(id: number, updateCommentDto: UpdateCommentDto) {
