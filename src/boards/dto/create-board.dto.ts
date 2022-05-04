@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { CreateStateDto } from './create-state.dto';
+
+class UserEntry {
+  id: number;
+  role: string;
+}
 
 export class CreateBoardDto {
   @ApiProperty()
@@ -13,9 +17,5 @@ export class CreateBoardDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  users: number[];
-
-  @ApiProperty()
-  @IsNotEmpty()
-  states: CreateStateDto[];
+  users: UserEntry[];
 }

@@ -64,7 +64,7 @@ export class BoardsService {
     board.name = updateBoardDto.name;
     this.connection.manager.save(board);
     if (updateBoardDto.users) {
-      const userIds = updateBoardDto.users;
+      const userIds = updateBoardDto.users.map((user) => user.id);
       // TODO: check at least one owner
       const remainingUsers = board.users.filter((boardUser) =>
         userIds.includes(boardUser.user.id),
