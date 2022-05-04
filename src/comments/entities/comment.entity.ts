@@ -17,7 +17,7 @@ export class Comment {
 
   @ApiProperty()
   @Column()
-  commentText: string;
+  message: string;
 
   @ApiProperty({ type: () => User })
   @ManyToOne(() => User, (user) => user.createdComments)

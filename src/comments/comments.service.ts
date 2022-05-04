@@ -20,12 +20,11 @@ export class CommentsService {
     if (!task) throw new NotFoundException('task not found');
 
     const comment = new Comment();
-    comment.commentText = createCommentDto.comment;
+    comment.message = createCommentDto.message;
     comment.task = task;
     const createdBy = await this.usersRepository.findOne(userId);
     comment.createdBy = createdBy;
     this.tasksRepository.save(task);
-    task.comments.push(comment);
 
     return comment;
   }
