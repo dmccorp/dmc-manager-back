@@ -52,7 +52,7 @@ export class TasksService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} task`;
+    return this.tasksRepository.findOne(id);
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
