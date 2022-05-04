@@ -43,6 +43,7 @@ export class CommentsService {
     if (!comment) throw new NotFoundException('comment not found');
 
     comment.message = updateCommentDto.message;
+    comment.edited = true;
     return this.commentRepository.save(comment);
   }
 

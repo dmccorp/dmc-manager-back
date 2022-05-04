@@ -7,6 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -30,4 +31,12 @@ export class Comment {
   @ApiProperty({ type: () => [Task] })
   @ManyToOne(() => Task, (task) => task.comments, { cascade: true })
   task: Task;
+
+  @ApiProperty()
+  @Column({ default: false })
+  edited: boolean;
+
+  @ApiProperty()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
