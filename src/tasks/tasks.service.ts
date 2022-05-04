@@ -57,7 +57,9 @@ export class TasksService {
   }
 
   findOne(id: number) {
-    return this.tasksRepository.findOne(id);
+    return this.tasksRepository.findOne(id, {
+      relations: ['comments'],
+    });
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
