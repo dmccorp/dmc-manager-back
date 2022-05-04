@@ -6,12 +6,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  Post,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -24,6 +26,11 @@ export class UsersController {
   })
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 
   @Get(':id')
