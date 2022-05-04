@@ -2,11 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Board } from 'src/boards/entities/board.entity';
 import { Sprint } from 'src/sprint/entities/sprint.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -36,6 +38,10 @@ export class Task {
   @ApiProperty({ type: () => Sprint })
   @ManyToOne(() => Sprint, (sprint) => sprint.tasks)
   sprint: Sprint;
+
+  @ApiProperty({ type: () => Comment })
+  @OneToMany(() => Comment, (comment) => comment.task, { cascade: true })
+  comments: Comment[];
 
   @ApiProperty()
   @Column()

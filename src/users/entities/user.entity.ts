@@ -3,6 +3,7 @@ import { Task } from 'src/tasks/entities/task.entity';
 import {
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -11,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { WorkspaceUser } from 'src/workspaces/entities/workspaceUser.entity';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { BoardUser } from 'src/boards/entities/boardUser.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity()
 export class User {
@@ -42,6 +44,9 @@ export class User {
 
   @ManyToOne(() => Task, (task) => task.createdBy)
   createdTasks: Task[];
+
+  @ManyToMany(() => Comment, (comment) => comment.createdBy)
+  createdComments: Comment[];
 
   toJSON() {
     return instanceToPlain(this);

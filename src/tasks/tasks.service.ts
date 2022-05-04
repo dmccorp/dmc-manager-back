@@ -45,14 +45,21 @@ export class TasksService {
 
   async getTasksFromBoard(id): Promise<Task[]> {
     const board = await this.boardsRepository.findOne(id, {
-      relations: ['tasks', 'tasks.assignee', 'tasks.createdBy'],
+      relations: [
+        'tasks',
+        'tasks.assignee',
+        'tasks.createdBy',
+        'tasks.comments',
+      ],
     });
     if (!board) throw new NotFoundException();
     return board.tasks;
   }
 
   findOne(id: number) {
-    return this.tasksRepository.findOne(id);
+    return this.tasksRepository.findOne(id, {
+      relations: ['comments'],
+    });
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
