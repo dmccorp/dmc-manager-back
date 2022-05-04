@@ -40,7 +40,7 @@ export class Task {
   sprint: Sprint;
 
   @ApiProperty({ type: () => Sprint })
-  @OneToMany(() => Comment, (comment) => comment.task, {cascade: true})
+  @OneToMany(() => Comment, (comment) => comment.task, { cascade: true })
   comments: Comment[];
 
   @ApiProperty()
