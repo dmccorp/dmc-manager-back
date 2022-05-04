@@ -16,7 +16,9 @@ export class CommentsService {
   ) {}
 
   async create(createCommentDto: CreateCommentDto, userId: number) {
-    const task = await this.tasksRepository.findOne(createCommentDto.taskId);
+    const task = await this.tasksRepository.findOne(createCommentDto.taskId, {
+      relations: ['comments'],
+    });
     if (!task) throw new NotFoundException('task not found');
 
     const comment = new Comment();
@@ -30,7 +32,7 @@ export class CommentsService {
   }
 
   findAll() {
-    return `This action returns all comments`;
+    return this.commentRepository.find();
   }
 
   findOne(id: number) {
@@ -46,6 +48,6 @@ export class CommentsService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} comment`;
+    return this.commentRepository.delete(id);
   }
 }

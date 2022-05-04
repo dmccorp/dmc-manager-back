@@ -28,6 +28,6 @@ export class Comment {
   createdAt: Date;
 
   @ApiProperty({ type: () => [Task] })
-  @ManyToOne(() => Task, (task) => task.comments, { cascade: true })
+  @ManyToOne(() => Task, (task) => task.comments)
   task: Task;
 }
