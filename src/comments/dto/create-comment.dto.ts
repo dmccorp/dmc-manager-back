@@ -4,7 +4,7 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateCommentDto {
   @ApiProperty()
   @IsNotEmpty()
-  comment: string;
+  message: string;
 
   @ApiProperty()
   @IsNotEmpty()

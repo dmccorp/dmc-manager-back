@@ -12,7 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { WorkspaceUser } from 'src/workspaces/entities/workspaceUser.entity';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { BoardUser } from 'src/boards/entities/boardUser.entity';
-import { Comment } from 'src/comments/entities/comment.entity'
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity()
 export class User {
