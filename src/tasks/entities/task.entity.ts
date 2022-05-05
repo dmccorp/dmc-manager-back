@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { State } from 'src/boards/entities/state.entity';
 
 @Entity()
 export class Task {
@@ -24,7 +25,8 @@ export class Task {
   name: string;
 
   @ApiProperty()
-  stateId: number;
+  @ManyToOne(() => State, (state) => state.tasks, { nullable: true })
+  state: State;
 
   @ApiProperty({ type: () => Board })
   @ManyToOne(() => Board, (board) => board.tasks)

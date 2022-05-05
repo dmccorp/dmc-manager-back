@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from 'src/boards/entities/board.entity';
+import { State } from 'src/boards/entities/state.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Connection, Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -13,13 +14,15 @@ export class TasksService {
     @InjectRepository(Task) private tasksRepository: Repository<Task>,
     @InjectRepository(Board) private boardsRepository: Repository<Board>,
     @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(State) private stateRepository: Repository<State>,
     private connection: Connection,
   ) {}
 
   async create(createTaskDto: CreateTaskDto, userId: number) {
     const task = new Task();
     task.name = createTaskDto.name;
-    task.stateId = createTaskDto.stateId;
+    const state = await this.stateRepository.findOne(createTaskDto.stateId);
+    task.state = state;
     const board = await this.boardsRepository.findOne(createTaskDto.board, {
       relations: ['users', 'users.user'],
     });
@@ -51,6 +54,7 @@ export class TasksService {
         'tasks.assignee',
         'tasks.createdBy',
         'tasks.comments',
+        'tasks.state',
       ],
     });
     if (!board) throw new NotFoundException();

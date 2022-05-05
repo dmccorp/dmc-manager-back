@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Task } from 'src/tasks/entities/task.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Board } from './board.entity';
 
 @Entity()
@@ -23,4 +30,7 @@ export class State {
   @ApiProperty()
   @Column({ nullable: true })
   meta: string;
+
+  @OneToMany(() => Task, (task) => task.state)
+  tasks: Task[];
 }
