@@ -25,6 +25,10 @@ export class Task {
   name: string;
 
   @ApiProperty()
+  @Column({ nullable: true })
+  description: string;
+
+  @ApiProperty()
   @ManyToOne(() => State, (state) => state.tasks, { nullable: true })
   state: State;
 

@@ -18,4 +18,7 @@ export class CreateTaskDto {
 
   @ApiProperty()
   sprint: number;
+
+  @ApiProperty()
+  description: string;
 }
