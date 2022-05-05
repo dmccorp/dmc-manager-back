@@ -15,4 +15,7 @@ export class CreateTaskDto {
 
   @ApiProperty()
   stateId: number;
+
+  @ApiProperty()
+  sprint: number;
 }

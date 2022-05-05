@@ -8,9 +8,12 @@ import { User } from 'src/users/entities/user.entity';
 import { TasksService } from 'src/tasks/tasks.service';
 import { Task } from 'src/tasks/entities/task.entity';
 import { State } from './entities/state.entity';
+import { Sprint } from 'src/sprint/entities/sprint.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Board, Workspace, User, Task, State])],
+  imports: [
+    TypeOrmModule.forFeature([Board, Workspace, User, Task, State, Sprint]),
+  ],
   controllers: [BoardsController],
   providers: [BoardsService, TasksService],
 })

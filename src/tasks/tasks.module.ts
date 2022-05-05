@@ -6,9 +6,10 @@ import { Task } from './entities/task.entity';
 import { Board } from 'src/boards/entities/board.entity';
 import { User } from 'src/users/entities/user.entity';
 import { State } from 'src/boards/entities/state.entity';
+import { Sprint } from 'src/sprint/entities/sprint.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Task, Board, User, State])],
+  imports: [TypeOrmModule.forFeature([Task, Board, User, State, Sprint])],
   controllers: [TasksController],
   providers: [TasksService],
 })

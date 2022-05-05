@@ -45,7 +45,7 @@ export class BoardsController {
 
   @Get(':id/tasks')
   findTasksFromBoard(@Param('id') id: string, @Query() query: ListTaskDto) {
-    return this.tasksService.getTasksFromBoard(+id, query.sprint);
+    return this.tasksService.getTasksFromBoard(+id, +query.sprint);
   }
 
   @Get(':id')

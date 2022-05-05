@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from 'src/boards/entities/board.entity';
 import { State } from 'src/boards/entities/state.entity';
+import { Sprint } from 'src/sprint/entities/sprint.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Connection, Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -15,6 +20,7 @@ export class TasksService {
     @InjectRepository(Board) private boardsRepository: Repository<Board>,
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(State) private stateRepository: Repository<State>,
+    @InjectRepository(Sprint) private sprintRepository: Repository<Sprint>,
     private connection: Connection,
   ) {}
 
@@ -32,6 +38,11 @@ export class TasksService {
     )
       throw new NotFoundException('board not found');
     task.board = board;
+    if (createTaskDto.sprint) {
+      const sprint = await this.sprintRepository.findOne(createTaskDto.sprint);
+      if (!sprint) throw new BadRequestException('sprint not found');
+      task.sprint = sprint;
+    }
     if (createTaskDto.assignee) {
       const assignee = await this.usersRepository.findOne(
         createTaskDto.assignee,
@@ -59,8 +70,9 @@ export class TasksService {
       ],
     });
     if (!board) throw new NotFoundException();
+    // TODO: optimize
     if (sprint) {
-      return board.tasks.filter((task) => task.sprint.id === sprint);
+      return board.tasks.filter((task) => task.sprint?.id === sprint);
     }
     return board.tasks;
   }
