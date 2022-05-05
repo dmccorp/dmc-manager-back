@@ -47,7 +47,7 @@ export class TasksService {
     return `This action returns all tasks`;
   }
 
-  async getTasksFromBoard(id): Promise<Task[]> {
+  async getTasksFromBoard(id, sprint): Promise<Task[]> {
     const board = await this.boardsRepository.findOne(id, {
       relations: [
         'tasks',
@@ -55,9 +55,13 @@ export class TasksService {
         'tasks.createdBy',
         'tasks.comments',
         'tasks.state',
+        'tasks.sprint',
       ],
     });
     if (!board) throw new NotFoundException();
+    if (sprint) {
+      return board.tasks.filter((task) => task.sprint.id === sprint);
+    }
     return board.tasks;
   }
 

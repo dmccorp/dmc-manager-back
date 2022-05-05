@@ -8,9 +8,11 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ListTaskDto } from 'src/tasks/dto/list-task.dto';
 import { TasksService } from 'src/tasks/tasks.service';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -42,8 +44,8 @@ export class BoardsController {
   }
 
   @Get(':id/tasks')
-  findTasksFromBoard(@Param('id') id: string) {
-    return this.tasksService.getTasksFromBoard(+id);
+  findTasksFromBoard(@Param('id') id: string, @Query() query: ListTaskDto) {
+    return this.tasksService.getTasksFromBoard(+id, query.sprint);
   }
 
   @Get(':id')
