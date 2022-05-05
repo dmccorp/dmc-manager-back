@@ -84,7 +84,7 @@ export class TasksService {
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
-    const { board, assignee, ...dto } = updateTaskDto;
+    const { board, assignee, stateId, ...dto } = updateTaskDto;
     // FIXME
     // this.tasksRepository.update(id, dto);
     const task = await this.tasksRepository.findOne(id, {
@@ -104,8 +104,11 @@ export class TasksService {
       if (!foundAssignee) throw new NotFoundException('assignee not found');
       task.assignee = foundAssignee;
     }
+    if (stateId) {
+      const state = await this.stateRepository.findOne(stateId);
+      task.state = state;
+    }
     return this.connection.manager.save(task);
-    // return this.tasksRepository.update(id, dto);
   }
 
   remove(id: number) {
