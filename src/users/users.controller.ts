@@ -38,6 +38,11 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
+  @Get('search/:searchTerm')
+  search(@Param('searchTerm') searchTerm: string) {
+    return this.usersService.search(searchTerm)
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);

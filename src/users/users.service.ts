@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository, Like } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -9,6 +9,7 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private connection: Connection,
   ) {}
 
   create(createUserDto: CreateUserDto) {
@@ -23,6 +24,14 @@ export class UsersService {
     return this.userRepository.findOne(id);
   }
 
+  async search(searchTerm: string) {
+    const result = await this.connection.manager.getRepository(User).find({
+        username: Like(`%${searchTerm}%`),
+    })
+
+    return result
+  }
+
   // findByUsername(username: string): Promise<User | undefined> {
   //   return this.userRepository.findOne({ username });
   // }
@@ -30,7 +39,8 @@ export class UsersService {
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOne(id);
     user.username = updateUserDto.username;
-    return this.userRepository.save(user);
+    this.connection.manager.save(user);
+    return user
   }
 
   remove(id: number) {
